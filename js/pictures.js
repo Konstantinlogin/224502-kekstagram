@@ -13,6 +13,10 @@ Element.prototype.removeClass = function (classname) {
   this.classList.remove(classname);
 };
 
+Element.prototype.addClass = function (classname) {
+  this.classList.add(classname);
+};
+
 var randomizeNumbers = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
@@ -69,7 +73,6 @@ var appendPictures = function (element) {
 appendPictures(document.querySelector('.pictures'));
 
 var galleryPopup = document.querySelector('.gallery-overlay');
-galleryPopup.removeClass('hidden');
 
 var appendPicture = function (element) {
   element.querySelector('img').setAttribute('src', pictures[0].url);
@@ -78,3 +81,21 @@ var appendPicture = function (element) {
 };
 
 appendPicture(galleryPopup);
+
+var pictureElements = document.querySelectorAll('.picture');
+
+var onPictureClick = function(evt) {
+  console.log(this.innerHTML);
+  galleryPopup.removeClass('hidden');
+  evt.preventDefault();
+}
+
+var addEvents = function (elements, actionName, eventName) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].addEventListener(actionName, eventName, true);
+  }
+}
+
+addEvents(pictureElements, 'click', onPictureClick);
+
+
