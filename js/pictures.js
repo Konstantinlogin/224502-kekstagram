@@ -89,13 +89,13 @@ var appendPictures = function (element) {
 appendPictures(document.querySelector('.pictures'));
 
 var galleryPopup = document.querySelector('.gallery-overlay');
-var galleryPopupClose = document.querySelector('.gallery-overlay-close');
+var galleryPopupClose = galleryPopup.querySelector('.gallery-overlay-close');
 var pictureElements = document.querySelectorAll('.picture');
 
-var appendPicture = function (element, url, likes, commentsCount) {
-  element.querySelector('img').setAttribute('src', url);
-  element.querySelector('.likes-count').textContent = likes;
-  element.querySelector('.comments-count').textContent = commentsCount;
+var appendPicture = function (element, picture) {
+  element.querySelector('img').setAttribute('src', picture.url);
+  element.querySelector('.likes-count').textContent = picture.likes;
+  element.querySelector('.comments-count').textContent = picture.commentsCount;
 };
 
 var onPictureCloseClick = function (evt) {
@@ -109,12 +109,18 @@ var onPictureCloseEscape = function (evt) {
   }
 };
 
-var onPictureCloseEnter = function () {
-  document.onkeydown = function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      hidePopup();
-    }
-  };
+var onPictureCloseEnter = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    hidePopup();
+  }
+};
+
+var onPictureCloseFocus = function () {
+  addEvent(document, 'keydown', onPictureCloseEnter);
+};
+
+var onPictureCloseFocusOut = function () {
+  removeEvent(document, 'keydown', onPictureCloseEnter);
 };
 
 var onPictureClick = function (evt) {
@@ -127,7 +133,7 @@ var onPictureClick = function (evt) {
     likes: activePicture.querySelector('.picture-likes').textContent,
     commentsCount: activePicture.querySelector('.picture-comments').textContent
   };
-  appendPicture(galleryPopup, picture.url, picture.likes, picture.commentsCount);
+  appendPicture(galleryPopup, picture);
   showPopup();
 };
 
@@ -135,7 +141,8 @@ var showPopup = function () {
   galleryPopup.removeClass('hidden');
   addEvent(galleryPopupClose, 'click', onPictureCloseClick);
   addEvent(document, 'keydown', onPictureCloseEscape);
-  addEvent(galleryPopupClose, 'focus', onPictureCloseEnter);
+  addEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
+  addEvent(galleryPopupClose, 'focusout', onPictureCloseFocusOut);
 };
 
 var hidePopup = function () {
@@ -143,6 +150,7 @@ var hidePopup = function () {
   removeEvent(galleryPopupClose, 'click', onPictureCloseClick);
   removeEvent(document, 'keydown', onPictureCloseEscape);
   removeEvent(galleryPopupClose, 'focus', onPictureCloseEnter);
+  removeEvent(galleryPopupClose, 'focusout', onPictureCloseFocusOut);
   document.querySelector('.is-active').removeClass('is-active');
 };
 
