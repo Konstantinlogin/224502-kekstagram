@@ -149,7 +149,7 @@ var hidePopup = function () {
   galleryPopup.addClass('hidden');
   removeEvent(galleryPopupClose, 'click', onPictureCloseClick);
   removeEvent(document, 'keydown', onPictureCloseEscape);
-  removeEvent(galleryPopupClose, 'focus', onPictureCloseEnter);
+  removeEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
   removeEvent(galleryPopupClose, 'focusout', onPictureCloseFocusOut);
   document.querySelector('.is-active').removeClass('is-active');
 };
