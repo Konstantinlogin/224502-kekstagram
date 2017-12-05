@@ -142,7 +142,7 @@ var showPopup = function () {
   addEvent(galleryPopupClose, 'click', onPictureCloseClick);
   addEvent(document, 'keydown', onPictureCloseEscape);
   addEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
-  addEvent(galleryPopupClose, 'focusout', onPictureCloseFocusOut);
+  addEvent(galleryPopupClose, 'blur', onPictureCloseFocusOut);
 };
 
 var hidePopup = function () {
@@ -150,7 +150,7 @@ var hidePopup = function () {
   removeEvent(galleryPopupClose, 'click', onPictureCloseClick);
   removeEvent(document, 'keydown', onPictureCloseEscape);
   removeEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
-  removeEvent(galleryPopupClose, 'focusout', onPictureCloseFocusOut);
+  removeEvent(galleryPopupClose, 'blur', onPictureCloseFocusOut);
   document.querySelector('.is-active').removeClass('is-active');
 };
 
