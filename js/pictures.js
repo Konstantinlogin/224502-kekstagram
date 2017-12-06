@@ -9,12 +9,33 @@ var COMMENTS = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
 Element.prototype.removeClass = function (classname) {
   this.classList.remove(classname);
 };
 
+Element.prototype.addClass = function (classname) {
+  this.classList.add(classname);
+};
+
 var randomizeNumbers = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
+};
+
+var addEvents = function (elements, actionName, eventName) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].addEventListener(actionName, eventName, true);
+  }
+};
+
+var addEvent = function (element, actionName, eventName) {
+  element.addEventListener(actionName, eventName, true);
+};
+
+var removeEvent = function (element, actionName, eventName) {
+  element.removeEventListener(actionName, eventName, true);
 };
 
 var getTemplateContent = function (template, element) {
@@ -47,7 +68,6 @@ var generatePicturesArray = function (count) {
 };
 
 var pictures = generatePicturesArray(25);
-
 var picturesTemplate = getTemplateContent('#picture-template', '.picture');
 
 var renderPictures = function (picture) {
@@ -69,12 +89,69 @@ var appendPictures = function (element) {
 appendPictures(document.querySelector('.pictures'));
 
 var galleryPopup = document.querySelector('.gallery-overlay');
-galleryPopup.removeClass('hidden');
+var galleryPopupClose = galleryPopup.querySelector('.gallery-overlay-close');
+var pictureElements = document.querySelectorAll('.picture');
 
-var appendPicture = function (element) {
-  element.querySelector('img').setAttribute('src', pictures[0].url);
-  element.querySelector('.likes-count').textContent = pictures[0].likes;
-  element.querySelector('.comments-count').textContent = pictures[0].comments.length;
+var appendPicture = function (element, picture) {
+  element.querySelector('img').setAttribute('src', picture.url);
+  element.querySelector('.likes-count').textContent = picture.likes;
+  element.querySelector('.comments-count').textContent = picture.commentsCount;
 };
 
-appendPicture(galleryPopup);
+var onPictureCloseClick = function (evt) {
+  hidePopup();
+  evt.preventDefault();
+};
+
+var onPictureCloseEscape = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    hidePopup();
+  }
+};
+
+var onPictureCloseEnter = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    hidePopup();
+  }
+};
+
+var onPictureCloseFocus = function () {
+  addEvent(document, 'keydown', onPictureCloseEnter);
+};
+
+var onPictureCloseFocusOut = function () {
+  removeEvent(document, 'keydown', onPictureCloseEnter);
+};
+
+var onPictureClick = function (evt) {
+  var isActive = evt.currentTarget;
+  isActive.addClass('is-active');
+  evt.preventDefault();
+  var activePicture = document.querySelector('.is-active');
+  var picture = {
+    url: activePicture.querySelector('img').getAttribute('src'),
+    likes: activePicture.querySelector('.picture-likes').textContent,
+    commentsCount: activePicture.querySelector('.picture-comments').textContent
+  };
+  appendPicture(galleryPopup, picture);
+  showPopup();
+};
+
+var showPopup = function () {
+  galleryPopup.removeClass('hidden');
+  addEvent(galleryPopupClose, 'click', onPictureCloseClick);
+  addEvent(document, 'keydown', onPictureCloseEscape);
+  addEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
+  addEvent(galleryPopupClose, 'blur', onPictureCloseFocusOut);
+};
+
+var hidePopup = function () {
+  galleryPopup.addClass('hidden');
+  removeEvent(galleryPopupClose, 'click', onPictureCloseClick);
+  removeEvent(document, 'keydown', onPictureCloseEscape);
+  removeEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
+  removeEvent(galleryPopupClose, 'blur', onPictureCloseFocusOut);
+  document.querySelector('.is-active').removeClass('is-active');
+};
+
+addEvents(pictureElements, 'click', onPictureClick);
