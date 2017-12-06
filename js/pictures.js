@@ -155,3 +155,71 @@ var hidePopup = function () {
 };
 
 addEvents(pictureElements, 'click', onPictureClick);
+
+// download form
+var uploadForm = document.querySelector('#upload-select-image');
+var uploadInput = uploadForm.querySelector('#upload-file');
+var commentTextarea = uploadForm.querySelector('.upload-form-description');
+var uploadOverlay = document.querySelector('.upload-overlay');
+var uploadOverlayClose = document.querySelector('#upload-cancel');
+
+var showUploadForm = function () {
+  uploadOverlay.removeClass('hidden');
+  addEvent(uploadOverlayClose, 'click', onUploadOverlayClose);
+  addEvent(uploadOverlayClose, 'focus', onUploadOverlayCloseFocus);
+  addEvent(uploadOverlayClose, 'blur', onUploadOverlayCloseFocusOut);
+  addEvent(commentTextarea, 'focus', onCommentTextareaFocus);
+  addEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
+  addEvent(document, 'keydown', onUploadOverlayEscape);
+};
+
+var hideUploadForm = function () {
+  uploadOverlay.addClass('hidden');
+  removeEvent(uploadOverlayClose, 'click', onUploadOverlayClose);
+  removeEvent(uploadOverlayClose, 'focus', onUploadOverlayCloseFocus);
+  removeEvent(uploadOverlayClose, 'blur', onUploadOverlayCloseFocusOut);
+  removeEvent(commentTextarea, 'focus', onCommentTextareaFocus);
+  removeEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
+  removeEvent(document, 'keydown', onUploadOverlayEscape);
+};
+
+var onUploadOverlayClose = function () {
+  hideUploadForm();
+};
+
+var onUploadOverlayEscape = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    hideUploadForm();
+  }
+};
+
+var onUploadOverlayCloseEnter = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    hideUploadForm();
+  }
+};
+
+var onUploadOverlayCloseFocus = function () {
+  addEvent(document, 'keydown', onUploadOverlayCloseEnter);
+};
+
+var onUploadOverlayCloseFocusOut = function () {
+  removeEvent(document, 'keydown', onUploadOverlayCloseEnter);
+};
+
+var onUploadInputChange = function () {
+  showUploadForm();
+};
+
+
+var onCommentTextareaFocusOut = function () {
+  addEvent(document, 'keydown', onUploadOverlayEscape);
+};
+
+var onCommentTextareaFocus = function () {
+  removeEvent(document, 'keydown', onUploadOverlayEscape);
+};
+
+addEvent(uploadInput, 'change', onUploadInputChange);
+
+
