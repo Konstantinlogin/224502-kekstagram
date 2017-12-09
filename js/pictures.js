@@ -156,12 +156,53 @@ var hidePopup = function () {
 
 addEvents(pictureElements, 'click', onPictureClick);
 
-// download form
+// upload form
+
 var uploadForm = document.querySelector('#upload-select-image');
 var uploadInput = uploadForm.querySelector('#upload-file');
 var commentTextarea = uploadForm.querySelector('.upload-form-description');
 var uploadOverlay = document.querySelector('.upload-overlay');
 var uploadOverlayClose = document.querySelector('#upload-cancel');
+
+
+var uploadPicture = {
+  element: document.querySelector('.effect-image-preview'),
+  size: 100,
+  stepSize: 25,
+  maxSize: 100,
+  minSize: 25,
+  resizeControls: document.querySelector('.upload-resize-controls'),
+  resizeDec: document.querySelector('.upload-resize-controls-button-dec'),
+  resizeInc: document.querySelector('.upload-resize-controls-button-inc'),
+  resizeInput: document.querySelector('.upload-resize-controls-value'),
+};
+
+var incPictureSize = function () {
+  if (uploadPicture.size < uploadPicture.maxSize) {
+    uploadPicture.size += uploadPicture.stepSize;
+  }
+  return uploadPicture.size;
+};
+
+var decPictureSize = function () {
+  if (uploadPicture.size > uploadPicture.minSize) {
+    uploadPicture.size -= uploadPicture.stepSize;
+  }
+  return uploadPicture.size;
+};
+
+var changeResizeInputValue = function (val) {
+  uploadPicture.resizeInput.value = val + '%';
+};
+
+var onResizeControlsChange = function (evt) {
+  if (evt.target === uploadPicture.resizeInc) {
+    changeResizeInputValue(incPictureSize());
+  }
+  if (evt.target === uploadPicture.resizeDec) {
+    changeResizeInputValue(decPictureSize());
+  }
+};
 
 var showUploadForm = function () {
   uploadOverlay.removeClass('hidden');
@@ -171,6 +212,7 @@ var showUploadForm = function () {
   addEvent(commentTextarea, 'focus', onCommentTextareaFocus);
   addEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
   addEvent(document, 'keydown', onUploadOverlayEscape);
+  addEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
 };
 
 var hideUploadForm = function () {
@@ -181,6 +223,7 @@ var hideUploadForm = function () {
   removeEvent(commentTextarea, 'focus', onCommentTextareaFocus);
   removeEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
   removeEvent(document, 'keydown', onUploadOverlayEscape);
+  removeEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
 };
 
 var onUploadOverlayClose = function () {
@@ -221,5 +264,9 @@ var onCommentTextareaFocus = function () {
 };
 
 addEvent(uploadInput, 'change', onUploadInputChange);
+
+// =================
+
+showUploadForm();
 
 
