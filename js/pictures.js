@@ -165,15 +165,17 @@ var uploadOverlay = document.querySelector('.upload-overlay');
 var uploadOverlayClose = document.querySelector('#upload-cancel');
 
 var uploadPicture = {
-  element: document.querySelector('.effect-image-preview'),
+  element: uploadForm.querySelector('.effect-image-preview'),
   size: 100,
   stepSize: 25,
   maxSize: 100,
   minSize: 25,
-  resizeControls: document.querySelector('.upload-resize-controls'),
-  resizeDec: document.querySelector('.upload-resize-controls-button-dec'),
-  resizeInc: document.querySelector('.upload-resize-controls-button-inc'),
-  resizeInput: document.querySelector('.upload-resize-controls-value'),
+  resizeControls: uploadForm.querySelector('.upload-resize-controls'),
+  resizeDec: uploadForm.querySelector('.upload-resize-controls-button-dec'),
+  resizeInc: uploadForm.querySelector('.upload-resize-controls-button-inc'),
+  resizeInput: uploadForm.querySelector('.upload-resize-controls-value'),
+  effectControls: uploadForm.querySelector('.upload-effect-controls'),
+  effects: ['chrome', 'sepia', 'marvin', 'phobos', 'heat']
 };
 
 // Закрытие и закрытие upload picture
@@ -248,6 +250,20 @@ var onResizeControlsChange = function (evt) {
   }
 };
 
+var onEffectControlsChange = function (evt) {
+  var effectClass;
+  var effectClassPrefix = 'effect';
+  for (var i = 0; i < uploadPicture.effects.length; i++) {
+    effectClass = effectClassPrefix + '-' + uploadPicture.effects[i];
+    if (evt.target.name === 'effect' && evt.target.value === uploadPicture.effects[i]) {
+      uploadPicture.element.addClass(effectClass); 
+    }
+    else {
+      uploadPicture.element.removeClass(effectClass); 
+    }
+  }
+};
+
 var showUploadForm = function () {
   uploadOverlay.removeClass('hidden');
   addEvent(uploadOverlayClose, 'click', onUploadOverlayClose);
@@ -257,6 +273,7 @@ var showUploadForm = function () {
   addEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
   addEvent(document, 'keydown', onUploadOverlayEscape);
   addEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
+  addEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
 };
 
 var hideUploadForm = function () {
@@ -268,6 +285,7 @@ var hideUploadForm = function () {
   removeEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
   removeEvent(document, 'keydown', onUploadOverlayEscape);
   removeEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
+  removeEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
   resizePicture(100);
 };
 
