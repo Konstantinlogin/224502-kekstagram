@@ -250,18 +250,28 @@ var onResizeControlsChange = function (evt) {
   }
 };
 
-var onEffectControlsChange = function (evt) {
+var changeEffect = function (value) {
   var effectClass;
   var effectClassPrefix = 'effect';
   for (var i = 0; i < uploadPicture.effects.length; i++) {
     effectClass = effectClassPrefix + '-' + uploadPicture.effects[i];
-    if (evt.target.name === 'effect' && evt.target.value === uploadPicture.effects[i]) {
+    if (value === uploadPicture.effects[i]) {
       uploadPicture.element.addClass(effectClass); 
     }
     else {
       uploadPicture.element.removeClass(effectClass); 
     }
   }
+}
+
+var onEffectControlsChange = function (evt) {
+  changeEffect(evt.target.value);
+};
+
+var resetUploadForm = function () {
+  resizePicture(100);
+  changeEffect('default');
+  uploadForm.querySelector('#upload-effect-none').checked = true;
 };
 
 var showUploadForm = function () {
@@ -286,7 +296,7 @@ var hideUploadForm = function () {
   removeEvent(document, 'keydown', onUploadOverlayEscape);
   removeEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
   removeEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
-  resizePicture(100);
+  resetUploadForm();
 };
 
 
