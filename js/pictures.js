@@ -302,8 +302,25 @@ var hideUploadForm = function () {
 
 addEvent(uploadInput, 'change', onUploadInputChange);
 
+var validateHashTags = function (string) {
+  var maxLength = {
+    tags: 5
+  }
+  var errorTxt = {
+    sameTags: 'один и тот же хэш-тег не может быть использован дважды',
+    tooMuchTags: 'нельзя указать больше пяти хэш-тегов',
+    tooLargeTag: 'максимальная длина одного хэш-тега 20 символов'
+  }
+  var hashes = string.toLowerCase().split(' ');
+  var errorMessagess = [];
+  if (hashes.length > maxLength.tags) {
+    errorMessagess.push(errorTxt.tooMuchTags);
+  }
+  console.log(errorMessagess);
+};
+
+validateHashTags('hashtag HASHTAG haShTag otherHash otherHash otherHash');
+
 // =================
 // TODO: удалить после завершения задания
 showUploadForm();
-
-
