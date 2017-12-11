@@ -303,23 +303,64 @@ var hideUploadForm = function () {
 addEvent(uploadInput, 'change', onUploadInputChange);
 
 var validateHashTags = function (string) {
-  var maxLength = {
-    tags: 5
+  var validate = {
+    tags: 5,
+    pattern: /^#[a-zа-яё]+$/,
+    maxLength: 21
   }
-  var errorTxt = {
-    sameTags: 'один и тот же хэш-тег не может быть использован дважды',
-    tooMuchTags: 'нельзя указать больше пяти хэш-тегов',
-    tooLargeTag: 'максимальная длина одного хэш-тега 20 символов'
-  }
+
+  var isValid = false;
+
   var hashes = string.toLowerCase().split(' ');
-  var errorMessagess = [];
-  if (hashes.length > maxLength.tags) {
-    errorMessagess.push(errorTxt.tooMuchTags);
+
+  var validateLength = function () {
+    var result;
+    if (hashes.length > validate.tags) {
+      result = false;
+    }
+    else {
+      result = true;
+    }
+    return result;
   }
-  console.log(errorMessagess);
+
+  var validateHashes = function () {
+    var result;
+    for (var i = 0; i < hashes.length; i++) {
+        if (validate.pattern.test(hashes[i]) === false || hashes[i].length > 21) {
+          result = false;
+          break;
+        } else {
+          result = true;
+        }
+    }
+    return result;
+  }
+
+  var validateUniqueHashes = function () {
+      var result = true;   
+      for (var i = 0; i < hashes.length - 1; i++)
+       { 
+         for (var j = i+1; j < hashes.length; j++)
+          { 
+            if (hashes[i] === hashes[j]) {
+              result = false; 
+            }
+          }
+       }
+      return result;
+  }
+
+  if (validateLength() && validateHashes() && validateUniqueHashes()) {
+    isValid = true;
+  }
+
+  return isValid;
+
 };
 
-validateHashTags('hashtag HASHTAG haShTag otherHash otherHash otherHash');
+console.log(validateHashTags('#hdass #драмнбасс #hdФЫВas #HDAS'));
+
 
 // =================
 // TODO: удалить после завершения задания
