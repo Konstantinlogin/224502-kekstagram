@@ -159,6 +159,7 @@ addEvents(pictureElements, 'click', onPictureClick);
 // upload form
 
 var uploadForm = document.querySelector('#upload-select-image');
+var hashTagInput = uploadForm.querySelector('.upload-form-hashtags');
 var uploadInput = uploadForm.querySelector('#upload-file');
 var commentTextarea = uploadForm.querySelector('.upload-form-description');
 var uploadOverlay = document.querySelector('.upload-overlay');
@@ -256,13 +257,12 @@ var changeEffect = function (value) {
   for (var i = 0; i < uploadPicture.effects.length; i++) {
     effectClass = effectClassPrefix + '-' + uploadPicture.effects[i];
     if (value === uploadPicture.effects[i]) {
-      uploadPicture.element.addClass(effectClass); 
-    }
-    else {
-      uploadPicture.element.removeClass(effectClass); 
+      uploadPicture.element.addClass(effectClass);
+    } else {
+      uploadPicture.element.removeClass(effectClass);
     }
   }
-}
+};
 
 var onEffectControlsChange = function (evt) {
   changeEffect(evt.target.value);
@@ -272,6 +272,9 @@ var resetUploadForm = function () {
   resizePicture(100);
   changeEffect('default');
   uploadForm.querySelector('#upload-effect-none').checked = true;
+  uploadInput.value = '';
+  commentTextarea.value = '';
+  hashTagInput.value = '';
 };
 
 var showUploadForm = function () {
@@ -284,6 +287,7 @@ var showUploadForm = function () {
   addEvent(document, 'keydown', onUploadOverlayEscape);
   addEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
   addEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
+  addEvent(uploadForm, 'submit', onUploadFormSubmit);
 };
 
 var hideUploadForm = function () {
@@ -296,60 +300,54 @@ var hideUploadForm = function () {
   removeEvent(document, 'keydown', onUploadOverlayEscape);
   removeEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
   removeEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
+  removeEvent(uploadForm, 'submit', onUploadFormSubmit);
   resetUploadForm();
 };
-
 
 addEvent(uploadInput, 'change', onUploadInputChange);
 
 var validateHashTags = function (string) {
+
   var validate = {
     tags: 5,
     pattern: /^#[a-zа-яё]+$/,
     maxLength: 21
-  }
+  };
 
   var isValid = false;
 
   var hashes = string.toLowerCase().split(' ');
 
   var validateLength = function () {
-    var result;
+    var result = true;
     if (hashes.length > validate.tags) {
       result = false;
     }
-    else {
-      result = true;
-    }
     return result;
-  }
+  };
 
   var validateHashes = function () {
-    var result;
+    var result = true;
     for (var i = 0; i < hashes.length; i++) {
-        if (validate.pattern.test(hashes[i]) === false || hashes[i].length > 21) {
-          result = false;
-          break;
-        } else {
-          result = true;
-        }
+      if (validate.pattern.test(hashes[i]) === false || hashes[i].length > 21) {
+        result = false;
+        break;
+      }
     }
     return result;
-  }
+  };
 
   var validateUniqueHashes = function () {
-      var result = true;   
-      for (var i = 0; i < hashes.length - 1; i++)
-       { 
-         for (var j = i+1; j < hashes.length; j++)
-          { 
-            if (hashes[i] === hashes[j]) {
-              result = false; 
-            }
-          }
-       }
-      return result;
-  }
+    var result = true;
+    for (var i = 0; i < hashes.length - 1; i++) {
+      for (var j = i + 1; j < hashes.length; j++) {
+        if (hashes[i] === hashes[j]) {
+          result = false;
+        }
+      }
+    }
+    return result;
+  };
 
   if (validateLength() && validateHashes() && validateUniqueHashes()) {
     isValid = true;
@@ -359,9 +357,12 @@ var validateHashTags = function (string) {
 
 };
 
-console.log(validateHashTags('#hdass #драмнбасс #hdФЫВas #HDAS'));
+var onUploadFormSubmit = function (evt) {
 
-
-// =================
-// TODO: удалить после завершения задания
-showUploadForm();
+  if (hashTagInput.value.length > 0 && validateHashTags(hashTagInput.value) === false) {
+    hashTagInput.style.borderColor = 'red';
+    evt.preventDefault();
+  } else {
+    hashTagInput.style.removeProperty('border-color');
+  }
+};
