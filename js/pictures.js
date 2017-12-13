@@ -20,6 +20,18 @@ Element.prototype.addClass = function (classname) {
   this.classList.add(classname);
 };
 
+var addMultipleEvents = function (array) {
+  for (var i=0; i < array.length; i++) {
+    array[i].element.addEventListener(array[i].action, array[i].eventFunction);
+  }
+};
+
+var removeMultipleEvents = function (array) {
+  for (var i=0; i < array.length; i++) {
+    array[i].element.removeEventListener(array[i].action, array[i].eventFunction);
+  }
+};
+
 var randomizeNumbers = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
@@ -116,11 +128,11 @@ var onPictureCloseEnter = function (evt) {
 };
 
 var onPictureCloseFocus = function () {
-  addEvent(document, 'keydown', onPictureCloseEnter);
+  document.addEventListener('keydown', onPictureCloseEnter);
 };
 
 var onPictureCloseFocusOut = function () {
-  removeEvent(document, 'keydown', onPictureCloseEnter);
+  document.removeEventListener('keydown', onPictureCloseEnter);
 };
 
 var onPictureClick = function (evt) {
@@ -137,23 +149,42 @@ var onPictureClick = function (evt) {
   showPopup();
 };
 
+
+var uploadedPicturesEvents = [
+  {
+    element: galleryPopupClose,
+    action: 'click',
+    eventFunction: onPictureCloseClick
+  },
+  {
+    element: document,
+    action: 'keydown',
+    eventFunction: onPictureCloseEscape
+  },
+  {
+    element: galleryPopupClose,
+    action: 'focus',
+    eventFunction: onPictureCloseFocus
+  },
+  {
+    element: galleryPopupClose,
+    action: 'blur',
+    eventFunction: onPictureCloseFocusOut
+  }
+];
+
 var showPopup = function () {
   galleryPopup.removeClass('hidden');
-  addEvent(galleryPopupClose, 'click', onPictureCloseClick);
-  addEvent(document, 'keydown', onPictureCloseEscape);
-  addEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
-  addEvent(galleryPopupClose, 'blur', onPictureCloseFocusOut);
+  addMultipleEvents(uploadedPicturesEvents);
 };
 
 var hidePopup = function () {
   galleryPopup.addClass('hidden');
-  removeEvent(galleryPopupClose, 'click', onPictureCloseClick);
-  removeEvent(document, 'keydown', onPictureCloseEscape);
-  removeEvent(galleryPopupClose, 'focus', onPictureCloseFocus);
-  removeEvent(galleryPopupClose, 'blur', onPictureCloseFocusOut);
   document.querySelector('.is-active').removeClass('is-active');
+  removeMultipleEvents(uploadedPicturesEvents);
 };
 
+// TODO: функцию addevents заменить на делегирование
 addEvents(pictureElements, 'click', onPictureClick);
 
 // upload form
@@ -198,11 +229,11 @@ var onUploadOverlayCloseEnter = function (evt) {
 };
 
 var onUploadOverlayCloseFocus = function () {
-  addEvent(document, 'keydown', onUploadOverlayCloseEnter);
+  document.addEventListener('keydown', onUploadOverlayCloseEnter);
 };
 
 var onUploadOverlayCloseFocusOut = function () {
-  removeEvent(document, 'keydown', onUploadOverlayCloseEnter);
+  document.removeEventListener('keydown', onUploadOverlayCloseEnter);
 };
 
 var onUploadInputChange = function () {
@@ -210,11 +241,11 @@ var onUploadInputChange = function () {
 };
 
 var onCommentTextareaFocusOut = function () {
-  addEvent(document, 'keydown', onUploadOverlayEscape);
+  document.addEventListener('keydown', onUploadOverlayEscape);
 };
 
 var onCommentTextareaFocus = function () {
-  removeEvent(document, 'keydown', onUploadOverlayEscape);
+  document.removeEventListener('keydown', onUploadOverlayEscape);
 };
 
 // Взаимодействие с upload picture
@@ -277,34 +308,66 @@ var resetUploadForm = function () {
   hashTagInput.value = '';
 };
 
+var uploadFormEvents = [
+  {
+    element: uploadOverlayClose,
+    action: 'click',
+    eventFunction: onUploadOverlayClose
+  },
+  {
+    element: uploadOverlayClose,
+    action: 'focus',
+    eventFunction: onUploadOverlayCloseFocus
+  },
+  {
+    element: uploadOverlayClose,
+    action: 'blur',
+    eventFunction: onUploadOverlayCloseFocusOut
+  },
+  {
+    element: commentTextarea,
+    action: 'focus',
+    eventFunction: onCommentTextareaFocus
+  },
+  {
+    element: commentTextarea,
+    action: 'blur',
+    eventFunction: onCommentTextareaFocusOut
+  }, 
+  {
+    element: document,
+    action: 'keydown',
+    eventFunction: onUploadOverlayEscape
+  },
+  {
+    element: uploadPicture.resizeControls,
+    action: 'click',
+    eventFunction: onResizeControlsChange
+  },
+  {
+    element: uploadPicture.effectControls,
+    action: 'change',
+    eventFunction: onEffectControlsChange
+  },  
+  {
+    element: uploadForm,
+    action: 'submit',
+    eventFunction: onUploadFormSubmit
+  }
+];
+
 var showUploadForm = function () {
   uploadOverlay.removeClass('hidden');
-  addEvent(uploadOverlayClose, 'click', onUploadOverlayClose);
-  addEvent(uploadOverlayClose, 'focus', onUploadOverlayCloseFocus);
-  addEvent(uploadOverlayClose, 'blur', onUploadOverlayCloseFocusOut);
-  addEvent(commentTextarea, 'focus', onCommentTextareaFocus);
-  addEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
-  addEvent(document, 'keydown', onUploadOverlayEscape);
-  addEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
-  addEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
-  addEvent(uploadForm, 'submit', onUploadFormSubmit);
+  addMultipleEvents(uploadFormEvents);
 };
 
 var hideUploadForm = function () {
   uploadOverlay.addClass('hidden');
-  removeEvent(uploadOverlayClose, 'click', onUploadOverlayClose);
-  removeEvent(uploadOverlayClose, 'focus', onUploadOverlayCloseFocus);
-  removeEvent(uploadOverlayClose, 'blur', onUploadOverlayCloseFocusOut);
-  removeEvent(commentTextarea, 'focus', onCommentTextareaFocus);
-  removeEvent(commentTextarea, 'blur', onCommentTextareaFocusOut);
-  removeEvent(document, 'keydown', onUploadOverlayEscape);
-  removeEvent(uploadPicture.resizeControls, 'click', onResizeControlsChange);
-  removeEvent(uploadPicture.effectControls, 'change', onEffectControlsChange);
-  removeEvent(uploadForm, 'submit', onUploadFormSubmit);
   resetUploadForm();
+  removeMultipleEvents(uploadFormEvents);
 };
 
-addEvent(uploadInput, 'change', onUploadInputChange);
+uploadInput.addEventListener('change', onUploadInputChange);
 
 var validateHashTags = function (string) {
 
