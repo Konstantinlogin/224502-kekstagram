@@ -21,13 +21,13 @@ Element.prototype.addClass = function (classname) {
 };
 
 var addMultipleEvents = function (array) {
-  for (var i=0; i < array.length; i++) {
+  for (var i = 0; i < array.length; i++) {
     array[i].element.addEventListener(array[i].action, array[i].eventFunction);
   }
 };
 
 var removeMultipleEvents = function (array) {
-  for (var i=0; i < array.length; i++) {
+  for (var i = 0; i < array.length; i++) {
     array[i].element.removeEventListener(array[i].action, array[i].eventFunction);
   }
 };
@@ -40,14 +40,6 @@ var addEvents = function (elements, actionName, eventName) {
   for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener(actionName, eventName, true);
   }
-};
-
-var addEvent = function (element, actionName, eventName) {
-  element.addEventListener(actionName, eventName, true);
-};
-
-var removeEvent = function (element, actionName, eventName) {
-  element.removeEventListener(actionName, eventName, true);
 };
 
 var getTemplateContent = function (template, element) {
@@ -210,8 +202,6 @@ var uploadPicture = {
   effects: ['chrome', 'sepia', 'marvin', 'phobos', 'heat']
 };
 
-// Закрытие и закрытие upload picture
-
 var onUploadOverlayClose = function () {
   hideUploadForm();
 };
@@ -299,17 +289,21 @@ var onEffectControlsChange = function (evt) {
   changeEffect(evt.target.value);
 };
 
-var resetUploadForm = function () {
-  resizePicture(100);
-  changeEffect('default');
-  uploadForm.querySelector('#upload-effect-none').checked = true;
-  uploadInput.value = '';
-  commentTextarea.value = '';
-  hashTagInput.value = '';
+// Взаимодействие с upload form
+
+uploadInput.addEventListener('change', onUploadInputChange);
+
+var onUploadFormSubmit = function (evt) {
+  if (hashTagInput.value.length > 0 && validateHashTags(hashTagInput.value) === false) {
+    hashTagInput.style.borderColor = 'red';
+    evt.preventDefault();
+  } else {
+    hashTagInput.style.removeProperty('border-color');
+  }
 };
 
-var uploadFormEvents = [
-  {
+var uploadFormEvents =
+  [{
     element: uploadOverlayClose,
     action: 'click',
     eventFunction: onUploadOverlayClose
@@ -333,7 +327,7 @@ var uploadFormEvents = [
     element: commentTextarea,
     action: 'blur',
     eventFunction: onCommentTextareaFocusOut
-  }, 
+  },
   {
     element: document,
     action: 'keydown',
@@ -348,26 +342,13 @@ var uploadFormEvents = [
     element: uploadPicture.effectControls,
     action: 'change',
     eventFunction: onEffectControlsChange
-  },  
+  },
   {
     element: uploadForm,
     action: 'submit',
     eventFunction: onUploadFormSubmit
-  }
-];
+  }];
 
-var showUploadForm = function () {
-  uploadOverlay.removeClass('hidden');
-  addMultipleEvents(uploadFormEvents);
-};
-
-var hideUploadForm = function () {
-  uploadOverlay.addClass('hidden');
-  resetUploadForm();
-  removeMultipleEvents(uploadFormEvents);
-};
-
-uploadInput.addEventListener('change', onUploadInputChange);
 
 var validateHashTags = function (string) {
 
@@ -381,51 +362,43 @@ var validateHashTags = function (string) {
 
   var hashes = string.toLowerCase().split(' ');
 
-  var validateLength = function () {
-    var result = true;
-    if (hashes.length > validate.tags) {
-      result = false;
+  for (var i = 0; i < hashes.length; i++) {
+    if (validate.pattern.test(hashes[i]) === false) {
+      isValid = false;
+      break;
+    } else if (hashes.length > validate.tags) {
+      isValid = false;
+      break;
+    } else if (hashes.indexOf(hashes[i], i + 1) >= 0) {
+      isValid = false;
+      break;
+    } else if (hashes[i].length > validate.maxLength) {
+      isValid = false;
+      break;
+    } else {
+      isValid = true;
     }
-    return result;
-  };
-
-  var validateHashes = function () {
-    var result = true;
-    for (var i = 0; i < hashes.length; i++) {
-      if (validate.pattern.test(hashes[i]) === false || hashes[i].length > 21) {
-        result = false;
-        break;
-      }
-    }
-    return result;
-  };
-
-  var validateUniqueHashes = function () {
-    var result = true;
-    for (var i = 0; i < hashes.length - 1; i++) {
-      for (var j = i + 1; j < hashes.length; j++) {
-        if (hashes[i] === hashes[j]) {
-          result = false;
-        }
-      }
-    }
-    return result;
-  };
-
-  if (validateLength() && validateHashes() && validateUniqueHashes()) {
-    isValid = true;
   }
 
   return isValid;
-
 };
 
-var onUploadFormSubmit = function (evt) {
+var resetUploadForm = function () {
+  resizePicture(100);
+  changeEffect('default');
+  uploadForm.querySelector('#upload-effect-none').checked = true;
+  uploadInput.value = '';
+  commentTextarea.value = '';
+  hashTagInput.value = '';
+};
 
-  if (hashTagInput.value.length > 0 && validateHashTags(hashTagInput.value) === false) {
-    hashTagInput.style.borderColor = 'red';
-    evt.preventDefault();
-  } else {
-    hashTagInput.style.removeProperty('border-color');
-  }
+var showUploadForm = function () {
+  uploadOverlay.removeClass('hidden');
+  addMultipleEvents(uploadFormEvents);
+};
+
+var hideUploadForm = function () {
+  uploadOverlay.addClass('hidden');
+  resetUploadForm();
+  removeMultipleEvents(uploadFormEvents);
 };
