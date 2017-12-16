@@ -58,7 +58,6 @@
 
   var hidePopup = function () {
     galleryPopup.addClass('hidden');
-    document.querySelector('.is-active').removeClass('is-active');
     window.removeMultipleEvents(uploadedPicturesEvents);
   };
 
