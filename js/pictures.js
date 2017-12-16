@@ -12,26 +12,6 @@ var COMMENTS = [
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
-Element.prototype.removeClass = function (classname) {
-  this.classList.remove(classname);
-};
-
-Element.prototype.addClass = function (classname) {
-  this.classList.add(classname);
-};
-
-var addMultipleEvents = function (array) {
-  for (var i = 0; i < array.length; i++) {
-    array[i].element.addEventListener(array[i].action, array[i].eventFunction);
-  }
-};
-
-var removeMultipleEvents = function (array) {
-  for (var i = 0; i < array.length; i++) {
-    array[i].element.removeEventListener(array[i].action, array[i].eventFunction);
-  }
-};
-
 var randomizeNumbers = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
@@ -145,13 +125,13 @@ var uploadedPicturesEvents = [
 
 var showPopup = function () {
   galleryPopup.removeClass('hidden');
-  addMultipleEvents(uploadedPicturesEvents);
+  window.addMultipleEvents(uploadedPicturesEvents);
 };
 
 var hidePopup = function () {
   galleryPopup.addClass('hidden');
   document.querySelector('.is-active').removeClass('is-active');
-  removeMultipleEvents(uploadedPicturesEvents);
+  window.removeMultipleEvents(uploadedPicturesEvents);
 };
 
 
@@ -399,11 +379,11 @@ var uploadFormEvents =
 
 var showUploadForm = function () {
   uploadOverlay.removeClass('hidden');
-  addMultipleEvents(uploadFormEvents);
+  window.addMultipleEvents(uploadFormEvents);
 };
 
 var hideUploadForm = function () {
   uploadOverlay.addClass('hidden');
   resetUploadForm();
-  removeMultipleEvents(uploadFormEvents);
+  window.removeMultipleEvents(uploadFormEvents);
 };
