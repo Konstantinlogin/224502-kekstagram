@@ -1,14 +1,6 @@
 'use strict';
 
 (function () {
-  Element.prototype.removeClass = function (classname) {
-    this.classList.remove(classname);
-  };
-
-  Element.prototype.addClass = function (classname) {
-    this.classList.add(classname);
-  };
-
   window.addMultipleEvents = function (array) {
     for (var i = 0; i < array.length; i++) {
       array[i].element.addEventListener(array[i].action, array[i].eventFunction);
@@ -36,4 +28,11 @@
     return templateContent;
   };
 
+  Element.prototype.removeClass = function (classname) {
+    this.classList.remove(classname);
+  };
+
+  Element.prototype.addClass = function (classname) {
+    this.classList.add(classname);
+  };
 })();
