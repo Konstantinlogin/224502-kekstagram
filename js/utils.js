@@ -21,4 +21,19 @@
     }
   };
 
+  window.randomizeNumbers = function (min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  };
+
+
+  window.getTemplateContent = function (template, element) {
+    var templateContent;
+    if ('content' in document.createElement('template')) {
+      templateContent = document.querySelector(template).content.querySelector(element);
+    } else {
+      templateContent = document.querySelector(template).querySelector(element);
+    }
+    return templateContent;
+  };
+
 })();
