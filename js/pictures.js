@@ -36,12 +36,6 @@ var randomizeNumbers = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-var addEvents = function (elements, actionName, eventName) {
-  for (var i = 0; i < elements.length; i++) {
-    elements[i].addEventListener(actionName, eventName, true);
-  }
-};
-
 var getTemplateContent = function (template, element) {
   var templateContent;
   if ('content' in document.createElement('template')) {
@@ -94,7 +88,6 @@ appendPictures(document.querySelector('.pictures'));
 
 var galleryPopup = document.querySelector('.gallery-overlay');
 var galleryPopupClose = galleryPopup.querySelector('.gallery-overlay-close');
-var pictureElements = document.querySelectorAll('.picture');
 
 var appendPicture = function (element, picture) {
   element.querySelector('img').setAttribute('src', picture.url);
@@ -126,21 +119,6 @@ var onPictureCloseFocus = function () {
 var onPictureCloseFocusOut = function () {
   document.removeEventListener('keydown', onPictureCloseEnter);
 };
-
-var onPictureClick = function (evt) {
-  var isActive = evt.currentTarget;
-  isActive.addClass('is-active');
-  evt.preventDefault();
-  var activePicture = document.querySelector('.is-active');
-  var picture = {
-    url: activePicture.querySelector('img').getAttribute('src'),
-    likes: activePicture.querySelector('.picture-likes').textContent,
-    commentsCount: activePicture.querySelector('.picture-comments').textContent
-  };
-  appendPicture(galleryPopup, picture);
-  showPopup();
-};
-
 
 var uploadedPicturesEvents = [
   {
@@ -176,8 +154,35 @@ var hidePopup = function () {
   removeMultipleEvents(uploadedPicturesEvents);
 };
 
-// TODO: функцию addevents заменить на делегирование
-addEvents(pictureElements, 'click', onPictureClick);
+
+var selectedImage;
+
+var onPictureClick = function (evt) {
+  toggleActiveImage(evt.target);
+
+  var activePicture = document.querySelector('.is-active');
+
+  var picture = {
+    url: activePicture.querySelector('img').getAttribute('src'),
+    likes: activePicture.querySelector('.picture-likes').textContent,
+    commentsCount: activePicture.querySelector('.picture-comments').textContent
+  };
+  appendPicture(galleryPopup, picture);
+  showPopup();
+
+  evt.preventDefault();
+
+};
+
+var toggleActiveImage = function (node) {
+  if (selectedImage) {
+    selectedImage.parentNode.removeClass('is-active');
+  }
+  selectedImage = node;
+  selectedImage.parentNode.addClass('is-active');
+};
+
+document.querySelector('.pictures').addEventListener('click', onPictureClick, true);
 
 // upload form
 
@@ -302,53 +307,6 @@ var onUploadFormSubmit = function (evt) {
   }
 };
 
-var uploadFormEvents =
-  [{
-    element: uploadOverlayClose,
-    action: 'click',
-    eventFunction: onUploadOverlayClose
-  },
-  {
-    element: uploadOverlayClose,
-    action: 'focus',
-    eventFunction: onUploadOverlayCloseFocus
-  },
-  {
-    element: uploadOverlayClose,
-    action: 'blur',
-    eventFunction: onUploadOverlayCloseFocusOut
-  },
-  {
-    element: commentTextarea,
-    action: 'focus',
-    eventFunction: onCommentTextareaFocus
-  },
-  {
-    element: commentTextarea,
-    action: 'blur',
-    eventFunction: onCommentTextareaFocusOut
-  },
-  {
-    element: document,
-    action: 'keydown',
-    eventFunction: onUploadOverlayEscape
-  },
-  {
-    element: uploadPicture.resizeControls,
-    action: 'click',
-    eventFunction: onResizeControlsChange
-  },
-  {
-    element: uploadPicture.effectControls,
-    action: 'change',
-    eventFunction: onEffectControlsChange
-  },
-  {
-    element: uploadForm,
-    action: 'submit',
-    eventFunction: onUploadFormSubmit
-  }];
-
 
 var validateHashTags = function (string) {
 
@@ -391,6 +349,53 @@ var resetUploadForm = function () {
   commentTextarea.value = '';
   hashTagInput.value = '';
 };
+
+var uploadFormEvents =
+[{
+  element: uploadOverlayClose,
+  action: 'click',
+  eventFunction: onUploadOverlayClose
+},
+{
+  element: uploadOverlayClose,
+  action: 'focus',
+  eventFunction: onUploadOverlayCloseFocus
+},
+{
+  element: uploadOverlayClose,
+  action: 'blur',
+  eventFunction: onUploadOverlayCloseFocusOut
+},
+{
+  element: commentTextarea,
+  action: 'focus',
+  eventFunction: onCommentTextareaFocus
+},
+{
+  element: commentTextarea,
+  action: 'blur',
+  eventFunction: onCommentTextareaFocusOut
+},
+{
+  element: document,
+  action: 'keydown',
+  eventFunction: onUploadOverlayEscape
+},
+{
+  element: uploadPicture.resizeControls,
+  action: 'click',
+  eventFunction: onResizeControlsChange
+},
+{
+  element: uploadPicture.effectControls,
+  action: 'change',
+  eventFunction: onEffectControlsChange
+},
+{
+  element: uploadForm,
+  action: 'submit',
+  eventFunction: onUploadFormSubmit
+}];
 
 var showUploadForm = function () {
   uploadOverlay.removeClass('hidden');
