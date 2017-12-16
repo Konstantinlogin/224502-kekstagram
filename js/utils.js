@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+
+  window.KEYCODES = {
+    escape: 27,
+    enter: 13
+  };
+
   window.addMultipleEvents = function (array) {
     for (var i = 0; i < array.length; i++) {
       array[i].element.addEventListener(array[i].action, array[i].eventFunction);

@@ -1,6 +1,6 @@
 'use strict';
 
-(function () { 
+(function () {
   var renderPictures = function (picture) {
     var photoElement = window.picturesTemplate.cloneNode(true);
     photoElement.querySelector('img').setAttribute('src', picture.url);
