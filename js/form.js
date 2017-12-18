@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  // upload form
   var uploadForm = document.querySelector('#upload-select-image');
 
   var elements = {
@@ -11,8 +10,6 @@
     uploadOverlayClose: document.querySelector('#upload-cancel'),
     uploadPicture: uploadForm.querySelector('.effect-image-preview'),
     resizeControls: uploadForm.querySelector('.upload-resize-controls'),
-    resizeDec: uploadForm.querySelector('.upload-resize-controls-button-dec'),
-    resizeInc: uploadForm.querySelector('.upload-resize-controls-button-inc'),
     resizeInput: uploadForm.querySelector('.upload-resize-controls-value'),
     effectControls: uploadForm.querySelector('.upload-effect-controls'),
     effectLevel: uploadForm.querySelector('.upload-effect-level'),
@@ -71,37 +68,20 @@
     document.removeEventListener('keydown', onUploadOverlayEscape);
   };
 
-  var incPictureSize = function () {
-    if (settings.size < settings.maxSize) {
-      settings.size += settings.stepSize;
-    }
-    return settings.size;
+  var resizePicture = function (value) {
+    elements.uploadPicture.style.transform = 'scale(' + value / 100 + ')';
+    elements.resizeInput.value = value + '%';
   };
 
-  var decPictureSize = function () {
-    if (settings.size > settings.minSize) {
-      settings.size -= settings.stepSize;
-    }
-    return settings.size;
-  };
-
-  var resizePicture = function (val) {
-    elements.resizeInput.value = val + '%';
-    if (val === settings.maxSize) {
-      elements.uploadPicture.style.transform = 'scale(1)';
-    } else {
-      elements.uploadPicture.style.transform = 'scale(0.' + val + ')';
-    }
-  };
-
-  var onResizeControlsChange = function (evt) {
-    if (evt.target === elements.resizeInc) {
-      resizePicture(incPictureSize());
-    }
-    if (evt.target === elements.resizeDec) {
-      resizePicture(decPictureSize());
-    }
-  };
+  window.initializeScale({
+    callback: resizePicture,
+    target: '.upload-resize-controls',
+    increment: '.upload-resize-controls-button-inc',
+    decrement: '.upload-resize-controls-button-dec',
+    step: 25,
+    max: 100,
+    min: 25
+  });
 
   var changeEffect = function (value) {
     var isEffect = false;
@@ -272,11 +252,6 @@
       element: document,
       action: 'keydown',
       eventFunction: onUploadOverlayEscape
-    },
-    {
-      element: elements.resizeControls,
-      action: 'click',
-      eventFunction: onResizeControlsChange
     },
     {
       element: elements.effectControls,
