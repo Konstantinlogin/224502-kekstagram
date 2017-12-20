@@ -3,30 +3,41 @@
 (function () {
  
 
-  window.loadPictures = function (onLoad, onError) {
-    var url = 'https://js.dump.academy/kekstagram/data';
+  var request = function (url, type, onLoad, onError) {
+
+    var statusText = {
+      success: 'Данные успешно отправлены',
+      error: 'Ошибка сервера'
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-    var errorMessage = 'Ошибка сервера';
 
-    var getServerStatus = function () {
+    xhr.open(type, url);
+
+    xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        onLoad(xhr.response);
-        xhr.removeEventListener('error', onError);
+        if (type === 'GET') {
+          onLoad(xhr.response);
+        } else if (type === 'POST') {
+          onLoad(statusText.success);
+        }
       } else {
-        onError(errorMessage);
-        xhr.removeEventListener('error', getServerStatus);
+        onError(statusText.error);
       }
-    };
-
-    xhr.addEventListener('load', getServerStatus);
-    xhr.addEventListener('error', onError);
-
-    xhr.open('GET', url);
-    xhr.send();
+    });
 
     return xhr;
-
   };
+
+  window.loadPictures = function (onLoad, onError) {
+    var xhr = request('https://js.dump.academy/kekstagram/data', 'GET', onLoad, onError);
+    xhr.send();
+  }
+
+  window.formSumbit = function (data, onLoad, onError) {
+    var xhr = request('https://js.dump.academy/kekstagram', 'POST', onLoad, onError);
+    xhr.send(data);
+  }
 
 })();

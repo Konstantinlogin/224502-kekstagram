@@ -96,16 +96,25 @@
   });
 
   elements.uploadInput.addEventListener('change', onUploadInputChange);
-
+  
   var onUploadFormSubmit = function (evt) {
+    var submitData = new FormData(document.querySelector('.upload-form'));
+    evt.preventDefault();
     if (elements.hashTagInput.value.length > 0 && validateHashTags(elements.hashTagInput.value) === false) {
       elements.hashTagInput.style.borderColor = 'red';
-      evt.preventDefault();
     } else {
       elements.hashTagInput.style.removeProperty('border-color');
-    }
-  };
+      var onLoad = function (message) {
+        console.log(message);
+      };
+      var onError = function (message) {
+        console.log(message);
+      };
 
+      window.formSumbit(submitData, onLoad, onError);
+    }
+
+  };
 
   var validateHashTags = function (string) {
 
@@ -144,7 +153,7 @@
     resizePicture(100);
     changeEffect('effect-none');
     uploadForm.querySelector('#upload-effect-none').checked = true;
-    elements.uploadInput.value = '';
+    // elements.uploadInput.value = '';
     elements.commentTextarea.value = '';
     elements.hashTagInput.value = '';
     elements.uploadInput.value = '';
