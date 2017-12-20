@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  
   var galleryPopup = document.querySelector('.gallery-overlay');
   var galleryPopupClose = galleryPopup.querySelector('.gallery-overlay-close');
 
@@ -79,7 +80,13 @@
     selectedImage.parentNode.addClass('is-active');
   };
 
-  document.querySelector('.pictures').addEventListener('click', onPictureClick, true);
-
-
+  var onLoad = function (pictures) {
+    window.renderPhotos(pictures);
+    document.querySelector('.pictures').addEventListener('click', onPictureClick, true);
+  };
+  var onError = function (errorMessage) {
+    alert(errorMessage);
+  };
+  window.loadPictures(onLoad, onError);
+  
 })();

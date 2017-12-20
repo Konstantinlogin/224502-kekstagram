@@ -1,21 +1,26 @@
 'use strict';
 
 (function () {
-  var renderPictures = function (picture) {
-    var photoElement = window.picturesTemplate.cloneNode(true);
-    photoElement.querySelector('img').setAttribute('src', picture.url);
-    photoElement.querySelector('.picture-likes').textContent = picture.likes;
-    photoElement.querySelector('.picture-comments').textContent = picture.comments.length;
-    return photoElement;
+
+  var pictureTemplate = window.getTemplateContent('#picture-template', '.picture');
+  var picturesContainer = document.querySelector('.pictures');
+
+  var createPictureNode = function (picture) {
+    var pictureBlock = pictureTemplate.cloneNode(true);
+    pictureBlock.querySelector('img').src = picture.url;
+    pictureBlock.querySelector('.picture-likes').textContent = picture.likes;
+    pictureBlock.querySelector('.picture-comments').textContent = picture.comments.length;
+    return pictureBlock;
   };
 
-  var appendPictures = function (element) {
+  window.renderPhotos = function (pictures) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.pictures.length; i++) {
-      fragment.appendChild(renderPictures(window.pictures[i]));
-    }
-    element.appendChild(fragment);
+
+    pictures.forEach(function (picture) {
+      fragment.appendChild(createPictureNode(picture));
+    });
+
+    picturesContainer.appendChild(fragment);
   };
 
-  appendPictures(document.querySelector('.pictures'));
 })();
