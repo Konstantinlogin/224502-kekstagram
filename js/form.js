@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  // upload form
   var uploadForm = document.querySelector('#upload-select-image');
 
   var elements = {
@@ -11,8 +10,6 @@
     uploadOverlayClose: document.querySelector('#upload-cancel'),
     uploadPicture: uploadForm.querySelector('.effect-image-preview'),
     resizeControls: uploadForm.querySelector('.upload-resize-controls'),
-    resizeDec: uploadForm.querySelector('.upload-resize-controls-button-dec'),
-    resizeInc: uploadForm.querySelector('.upload-resize-controls-button-inc'),
     resizeInput: uploadForm.querySelector('.upload-resize-controls-value'),
     effectControls: uploadForm.querySelector('.upload-effect-controls'),
     effectLevel: uploadForm.querySelector('.upload-effect-level'),
@@ -22,17 +19,10 @@
     effectLevelLine: uploadForm.querySelector('.upload-effect-level-line')
   };
 
-  var settings = {
-    size: 100,
-    stepSize: 25,
-    maxSize: 100,
-    minSize: 25,
-    effects: ['chrome', 'sepia', 'marvin', 'phobos', 'heat'],
-    effectLevel: {
-      Min: 0,
-      Max: 100,
-      Default: elements.effectLevelValue.value
-    }
+  var effectSlider = {
+    Min: 0,
+    Max: 100,
+    Default: elements.effectLevelValue.value
   };
 
   var onUploadOverlayClose = function () {
@@ -71,62 +61,39 @@
     document.removeEventListener('keydown', onUploadOverlayEscape);
   };
 
-  var incPictureSize = function () {
-    if (settings.size < settings.maxSize) {
-      settings.size += settings.stepSize;
-    }
-    return settings.size;
+  var resizePicture = function (value) {
+    elements.uploadPicture.style.transform = 'scale(' + value / 100 + ')';
+    elements.resizeInput.value = value + '%';
   };
 
-  var decPictureSize = function () {
-    if (settings.size > settings.minSize) {
-      settings.size -= settings.stepSize;
-    }
-    return settings.size;
-  };
+  window.initializeScale({
+    callback: resizePicture,
+    target: '.upload-resize-controls',
+    increment: '.upload-resize-controls-button-inc',
+    decrement: '.upload-resize-controls-button-dec',
+    step: 25,
+    max: 100,
+    min: 25
+  });
 
-  var resizePicture = function (val) {
-    elements.resizeInput.value = val + '%';
-    if (val === settings.maxSize) {
-      elements.uploadPicture.style.transform = 'scale(1)';
-    } else {
-      elements.uploadPicture.style.transform = 'scale(0.' + val + ')';
-    }
-  };
-
-  var onResizeControlsChange = function (evt) {
-    if (evt.target === elements.resizeInc) {
-      resizePicture(incPictureSize());
-    }
-    if (evt.target === elements.resizeDec) {
-      resizePicture(decPictureSize());
-    }
-  };
-
-  var changeEffect = function (value) {
-    var isEffect = false;
-    var effectClass;
-    var effectClassPrefix = 'effect';
-    for (var i = 0; i < settings.effects.length; i++) {
-      effectClass = effectClassPrefix + '-' + settings.effects[i];
-      if (value === settings.effects[i]) {
-        elements.uploadPicture.addClass(effectClass);
-        isEffect = true;
-      } else {
-        elements.uploadPicture.removeClass(effectClass);
-      }
-      setDefaultEffectLevel();
-    }
-    if (isEffect === true) {
+  var oldEffect;
+  var changeEffect = function (className) {
+    var currentEffect = className;
+    elements.uploadPicture.removeClass(oldEffect);
+    elements.uploadPicture.addClass(currentEffect);
+    setDefaultEffectLevel();
+    if (currentEffect !== 'effect-none') {
       elements.effectLevel.removeClass('hidden');
     } else {
       elements.effectLevel.addClass('hidden');
     }
+    oldEffect = currentEffect;
   };
-
-  var onEffectControlsChange = function (evt) {
-    changeEffect(evt.target.value);
-  };
+  window.initializeFilters({
+    callback: changeEffect,
+    element: '.upload-effect-controls',
+    classPrefix: 'effect'
+  });
 
   elements.uploadInput.addEventListener('change', onUploadInputChange);
 
@@ -175,7 +142,7 @@
 
   var resetUploadForm = function () {
     resizePicture(100);
-    changeEffect('default');
+    changeEffect('effect-none');
     uploadForm.querySelector('#upload-effect-none').checked = true;
     elements.uploadInput.value = '';
     elements.commentTextarea.value = '';
@@ -184,9 +151,9 @@
   };
 
   var setDefaultEffectLevel = function () {
-    elements.effectLevelPin.style.left = settings.effectLevel.Default + '%';
+    elements.effectLevelPin.style.left = effectSlider.Default + '%';
     elements.effectLevelVal.style.width = elements.effectLevelPin.style.left;
-    elements.effectLevelValue.value = settings.effectLevel.Max;
+    elements.effectLevelValue.value = effectSlider.Max;
     elements.uploadPicture.style.removeProperty('filter');
   };
 
@@ -206,7 +173,6 @@
   };
 
   var onEffectLevelChange = function (evt) {
-
     evt.preventDefault();
     var startCoords = evt.clientX;
     var onMouseMove = function (moveEvt) {
@@ -216,14 +182,14 @@
       var lineWidth = parseInt(getComputedStyle(elements.effectLevelLine).width, 10);
       var effectLevel = (elements.effectLevelPin.offsetLeft - shift) / lineWidth * 100;
 
-      if (effectLevel >= settings.effectLevel.Max) {
-        elements.effectLevelPin.style.left = settings.effectLevel.Max + '%';
-        effectLevel = settings.effectLevel.Max;
-        elements.effectLevelValue.value = settings.effectLevel.Max;
-      } else if (effectLevel <= settings.effectLevel.Min) {
-        elements.effectLevelPin.style.left = settings.effectLevel.Min + '%';
-        effectLevel = settings.effectLevel.Min;
-        elements.effectLevelValue.value = settings.effectLevel.Min;
+      if (effectLevel >= effectSlider.Max) {
+        elements.effectLevelPin.style.left = effectSlider.Max + '%';
+        effectLevel = effectSlider.Max;
+        elements.effectLevelValue.value = effectSlider.Max;
+      } else if (effectLevel <= effectSlider.Min) {
+        elements.effectLevelPin.style.left = effectSlider.Min + '%';
+        effectLevel = effectSlider.Min;
+        elements.effectLevelValue.value = effectSlider.Min;
       } else {
         elements.effectLevelPin.style.left = (effectLevel) + '%';
         elements.effectLevelValue.value = Math.round(effectLevel);
@@ -272,16 +238,6 @@
       element: document,
       action: 'keydown',
       eventFunction: onUploadOverlayEscape
-    },
-    {
-      element: elements.resizeControls,
-      action: 'click',
-      eventFunction: onResizeControlsChange
-    },
-    {
-      element: elements.effectControls,
-      action: 'change',
-      eventFunction: onEffectControlsChange
     },
     {
       element: uploadForm,
