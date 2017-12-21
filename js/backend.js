@@ -1,14 +1,13 @@
 'use strict';
 
 (function () {
- 
 
   var request = function (url, type, onLoad, onError) {
 
     var statusText = {
       error: 'Ошибка сервера',
       timeoutError: 'Истекло время ожидания сервера'
-    }
+    };
 
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -36,11 +35,11 @@
   window.loadPictures = function (onLoad, onError) {
     var xhr = request('https://js.dump.academy/kekstagram/data', 'GET', onLoad, onError);
     xhr.send();
-  }
+  };
 
   window.formSumbit = function (data, onLoad, onError) {
     var xhr = request('https://js.dump.academy/kekstagram', 'POST', onLoad, onError);
     xhr.send(data);
-  }
+  };
 
 })();

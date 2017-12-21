@@ -97,7 +97,6 @@
   });
 
   elements.uploadInput.addEventListener('change', onUploadInputChange);
-  
   var onUploadFormSubmit = function (evt) {
     var submitData = new FormData(document.querySelector('.upload-form'));
     evt.preventDefault();
@@ -105,7 +104,7 @@
       elements.hashTagInput.style.borderColor = 'red';
     } else {
       elements.hashTagInput.style.removeProperty('border-color');
-      var onLoad = function (message) {
+      var onLoad = function () {
         hideUploadForm();
       };
       var onError = function (message) {
