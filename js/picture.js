@@ -5,7 +5,6 @@
   var pictureTemplate = window.getTemplateContent('#picture-template', '.picture');
   var picturesContainer = document.querySelector('.pictures');
 
-
   var createPictureNode = function (picture) {
     var pictureBlock = pictureTemplate.cloneNode(true);
     pictureBlock.querySelector('img').src = picture.url;
@@ -24,6 +23,5 @@
     picturesContainer.appendChild(fragment);
     return pictures;
   };
-
 
 })();
