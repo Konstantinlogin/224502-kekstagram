@@ -34,6 +34,25 @@
     return templateContent;
   };
 
+  window.errorDialog = function (message) {
+    var template = document.createElement('div');
+    template.textContent = message;
+    template.style.cssText="\
+      position: fixed; \
+      top: 50%; \
+      left: 50%; \
+      transform: translate(-50%, -50%); \
+      padding: 15px; \
+      border-radius: 4px; \
+      color: white; \
+      background-color: rgba(215, 44, 44, 0.8); \
+      color: white; \
+      max-width: 680px; \
+      z-index: 3;\
+    ";
+    document.body.appendChild(template);
+  };
+
   Element.prototype.removeClass = function (classname) {
     this.classList.remove(classname);
   };

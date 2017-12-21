@@ -5,6 +5,7 @@
   var elements = {
     hashTagInput: uploadForm.querySelector('.upload-form-hashtags'),
     uploadInput: uploadForm.querySelector('#upload-file'),
+    submitButton: uploadForm.querySelector('.upload-form-submit'),
     commentTextarea: uploadForm.querySelector('.upload-form-description'),
     uploadOverlay: document.querySelector('.upload-overlay'),
     uploadOverlayClose: document.querySelector('#upload-cancel'),
@@ -105,10 +106,10 @@
     } else {
       elements.hashTagInput.style.removeProperty('border-color');
       var onLoad = function (message) {
-        console.log(message);
+        hideUploadForm();
       };
       var onError = function (message) {
-        console.log(message);
+        window.errorDialog(message);
       };
 
       window.formSumbit(submitData, onLoad, onError);
@@ -153,7 +154,7 @@
     resizePicture(100);
     changeEffect('effect-none');
     uploadForm.querySelector('#upload-effect-none').checked = true;
-    // elements.uploadInput.value = '';
+    elements.uploadInput.value = '';
     elements.commentTextarea.value = '';
     elements.hashTagInput.value = '';
     elements.uploadInput.value = '';
