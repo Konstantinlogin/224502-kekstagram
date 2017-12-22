@@ -3,6 +3,9 @@
 
   var galleryPopup = document.querySelector('.gallery-overlay');
   var galleryPopupClose = galleryPopup.querySelector('.gallery-overlay-close');
+  var filterSwitcher = document.querySelector('.filters');
+  var debounceInterval = 500;
+  var data = [];
 
   var onPictureCloseClick = function (evt) {
     hidePopup();
@@ -62,9 +65,7 @@
     window.removeMultipleEvents(uploadedPicturesEvents);
   };
 
-
   var selectedImage;
-
   var onPictureClick = function (evt) {
     toggleActiveImage(evt.target);
     window.appendPicture(galleryPopup);
@@ -81,12 +82,88 @@
   };
 
   var onLoad = function (pictures) {
+    data = pictures;
     window.renderPhotos(pictures);
     document.querySelector('.pictures').addEventListener('click', onPictureClick, true);
+    filterSwitcher.classList.remove('filters-inactive');
+    filterSwitcher.addEventListener('change', onFilterChange);
   };
+
   var onError = function (errorMessage) {
     window.errorDialog(errorMessage);
   };
+
   window.loadPictures(onLoad, onError);
+
+  var lastTimeout;
+  var debounce = function (action) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(action, debounceInterval);
+  };
+
+  var removePictures = function () {
+    var pictureElements = document.querySelectorAll('.picture');
+    for (var i = 0; i < pictureElements.length; i++) {
+      document.querySelector('.pictures').removeChild(pictureElements[i]);
+    }
+  };
+
+  var getPopularPhotos = function (dataPopular) {
+    return dataPopular.slice().sort(function (first, second) {
+      if (first.likes < second.likes) {
+        return 1;
+      } else if (first.likes > second.likes) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  };
+
+  var getDiscussedPhotos = function (dataDiscussed) {
+    return dataDiscussed.slice().sort(function (first, second) {
+      if (first.comments.length < second.comments.length) {
+        return 1;
+      } else if (first.comments.length > second.comments.length) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  };
+
+  var getRandomPhotos = function (dataRandom) {
+    return dataRandom.slice().sort(function () {
+      return Math.random() - 0.5;
+    });
+  };
+
+  var onFilterChange = function (evt) {
+    var currentFilter = evt.target.id;
+
+    if (currentFilter === 'filter-recommend') {
+      debounce(function () {
+        removePictures();
+        window.renderPhotos(data);
+      });
+    } else if (currentFilter === 'filter-popular') {
+      debounce(function () {
+        removePictures();
+        window.renderPhotos(getPopularPhotos(data));
+      });
+    } else if (currentFilter === 'filter-discussed') {
+      debounce(function () {
+        removePictures();
+        window.renderPhotos(getDiscussedPhotos(data));
+      });
+    } else if (currentFilter === 'filter-random') {
+      debounce(function () {
+        removePictures();
+        window.renderPhotos(getRandomPhotos(data));
+      });
+    }
+  };
 
 })();

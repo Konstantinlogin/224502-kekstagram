@@ -21,6 +21,7 @@
     });
 
     picturesContainer.appendChild(fragment);
+    return pictures;
   };
 
 })();
