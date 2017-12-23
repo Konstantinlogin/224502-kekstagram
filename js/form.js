@@ -1,5 +1,12 @@
 'use strict';
 (function () {
+
+  var EFFECT_MIN_VALUE = 0;
+  var EFFECT_MAX_VALUE = 100;
+  var SCALE_STEP = 25;
+  var SCALE_MIN = 25;
+  var SCALE_MAX = 100;
+
   var uploadForm = document.querySelector('#upload-select-image');
 
   var elements = {
@@ -18,12 +25,6 @@
     effectLevelVal: uploadForm.querySelector('.upload-effect-level-val'),
     effectLevelValue: uploadForm.querySelector('.upload-effect-level-value'),
     effectLevelLine: uploadForm.querySelector('.upload-effect-level-line')
-  };
-
-  var effectSlider = {
-    Min: 0,
-    Max: 100,
-    Default: elements.effectLevelValue.value
   };
 
   var onUploadOverlayClose = function () {
@@ -72,9 +73,9 @@
     target: '.upload-resize-controls',
     increment: '.upload-resize-controls-button-inc',
     decrement: '.upload-resize-controls-button-dec',
-    step: 25,
-    max: 100,
-    min: 25
+    step: SCALE_STEP,
+    max: SCALE_MIN,
+    min: SCALE_MIN
   });
 
   var oldEffect;
@@ -82,7 +83,7 @@
     var currentEffect = className;
     elements.uploadPicture.removeClass(oldEffect);
     elements.uploadPicture.addClass(currentEffect);
-    setDefaultEffectLevel();
+    setEffectDefault();
     if (currentEffect !== 'effect-none') {
       elements.effectLevel.removeClass('hidden');
     } else {
@@ -95,6 +96,7 @@
     element: '.upload-effect-controls',
     classPrefix: 'effect'
   });
+
 
   elements.uploadInput.addEventListener('change', onUploadInputChange);
   var onUploadFormSubmit = function (evt) {
@@ -159,64 +161,40 @@
     elements.uploadInput.value = '';
   };
 
-  var setDefaultEffectLevel = function () {
-    elements.effectLevelPin.style.left = effectSlider.Default + '%';
+  var setEffectDefault = function () {
+    elements.effectLevelPin.style.left = elements.effectLevelValue.value + '%';
     elements.effectLevelVal.style.width = elements.effectLevelPin.style.left;
-    elements.effectLevelValue.value = effectSlider.Max;
+    elements.effectLevelValue.value = EFFECT_MAX_VALUE;
     elements.uploadPicture.style.removeProperty('filter');
   };
 
-  var changeEffectFilter = function (value) {
+  var changeEffectFilter = function (effectLevel) {
     var effectElement = elements.uploadPicture;
     if (effectElement.classList.contains('effect-chrome')) {
-      effectElement.style.filter = 'grayscale(' + value / 100 + ')';
+      effectElement.style.filter = 'grayscale(' + effectLevel / 100 + ')';
     } else if (effectElement.classList.contains('effect-sepia')) {
-      effectElement.style.filter = 'sepia(' + value / 100 + ')';
+      effectElement.style.filter = 'sepia(' + effectLevel / 100 + ')';
     } else if (effectElement.classList.contains('effect-marvin')) {
-      effectElement.style.filter = 'invert(' + value + '%)';
+      effectElement.style.filter = 'invert(' + effectLevel + '%)';
     } else if (effectElement.classList.contains('effect-phobos')) {
-      effectElement.style.filter = 'blur(' + value * 3 / 100 + 'px)';
+      effectElement.style.filter = 'blur(' + effectLevel * 3 / 100 + 'px)';
     } else if (effectElement.classList.contains('effect-heat')) {
-      effectElement.style.filter = 'brightness(' + value * 3 / 100 + ')';
+      effectElement.style.filter = 'brightness(' + effectLevel * 3 / 100 + ')';
     }
   };
 
-  var onEffectLevelChange = function (evt) {
-    evt.preventDefault();
-    var startCoords = evt.clientX;
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-      var shift = startCoords - moveEvt.clientX;
-      startCoords = moveEvt.clientX;
-      var lineWidth = parseInt(getComputedStyle(elements.effectLevelLine).width, 10);
-      var effectLevel = (elements.effectLevelPin.offsetLeft - shift) / lineWidth * 100;
+  window.initializeSlider({
+    callback: changeEffectFilter,
+    element: '.upload-effect-level',
+    pin: '.upload-effect-level-pin',
+    line: '.upload-effect-level-line',
+    val: '.upload-effect-level-val',
+    value: '.upload-effect-level-value',
+    maxValue: EFFECT_MAX_VALUE,
+    minValue: EFFECT_MIN_VALUE
+  });
 
-      if (effectLevel >= effectSlider.Max) {
-        elements.effectLevelPin.style.left = effectSlider.Max + '%';
-        effectLevel = effectSlider.Max;
-        elements.effectLevelValue.value = effectSlider.Max;
-      } else if (effectLevel <= effectSlider.Min) {
-        elements.effectLevelPin.style.left = effectSlider.Min + '%';
-        effectLevel = effectSlider.Min;
-        elements.effectLevelValue.value = effectSlider.Min;
-      } else {
-        elements.effectLevelPin.style.left = (effectLevel) + '%';
-        elements.effectLevelValue.value = Math.round(effectLevel);
-      }
-      elements.effectLevelVal.style.width = effectLevel + '%';
-      elements.effectLevelPin.style.left = effectLevel + '%';
 
-      changeEffectFilter(effectLevel);
-    };
-
-    var onMouseUp = function () {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-
-  };
   var uploadFormEvents = [
     {
       element: elements.uploadOverlayClose,
@@ -252,23 +230,18 @@
       element: uploadForm,
       action: 'submit',
       eventFunction: onUploadFormSubmit
-    },
-    {
-      element: elements.effectLevelPin,
-      action: 'mousedown',
-      eventFunction: onEffectLevelChange
     }
   ];
 
   var showUploadForm = function () {
     elements.uploadOverlay.removeClass('hidden');
     window.addMultipleEvents(uploadFormEvents);
-    setDefaultEffectLevel();
+    setEffectDefault();
   };
   var hideUploadForm = function () {
     elements.uploadOverlay.addClass('hidden');
     resetUploadForm();
-    setDefaultEffectLevel();
+    setEffectDefault();
     window.removeMultipleEvents(uploadFormEvents);
   };
 
