@@ -74,7 +74,7 @@
     increment: '.upload-resize-controls-button-inc',
     decrement: '.upload-resize-controls-button-dec',
     step: SCALE_STEP,
-    max: SCALE_MIN,
+    max: SCALE_MAX,
     min: SCALE_MIN
   });
 
@@ -97,12 +97,12 @@
     classPrefix: 'effect'
   });
 
-
   elements.uploadInput.addEventListener('change', onUploadInputChange);
+
   var onUploadFormSubmit = function (evt) {
     var submitData = new FormData(document.querySelector('.upload-form'));
     evt.preventDefault();
-    if (elements.hashTagInput.value.length > 0 && validateHashTags(elements.hashTagInput.value) === false) {
+    if (elements.hashTagInput.value.length > 0 && validateWords(elements.hashTagInput.value) === false) {
       elements.hashTagInput.style.borderColor = 'red';
     } else {
       elements.hashTagInput.style.removeProperty('border-color');
@@ -118,7 +118,7 @@
 
   };
 
-  var validateHashTags = function (string) {
+  var validateWords = function (string) {
 
     var validate = {
       tags: 5,
@@ -185,11 +185,10 @@
 
   window.initializeSlider({
     callback: changeEffectFilter,
-    element: '.upload-effect-level',
-    pin: '.upload-effect-level-pin',
-    line: '.upload-effect-level-line',
-    val: '.upload-effect-level-val',
-    value: '.upload-effect-level-value',
+    pin: elements.effectLevelPin,
+    line: elements.effectLevelLine,
+    val: elements.effectLevelVal,
+    value: elements.effectLevelValue,
     maxValue: EFFECT_MAX_VALUE,
     minValue: EFFECT_MIN_VALUE
   });

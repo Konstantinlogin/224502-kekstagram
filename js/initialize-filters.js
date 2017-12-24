@@ -28,12 +28,10 @@
     var maxValue = options.maxValue;
     var minValue = options.minValue;
 
-    var element = document.querySelector(options.element);
-    var elementPin = element.querySelector(options.pin);
-    var elementLine = element.querySelector(options.line);
-    var elementVal = element.querySelector(options.val);
-    var elementValue = element.querySelector(options.value);
-    
+    var elementPin = options.pin;
+    var elementLine = options.line;
+    var elementVal = options.val;
+    var elementValue = options.value;
 
     var moveSlider = function (evt) {
 
@@ -61,7 +59,6 @@
         elementVal.style.width = effectLevel + '%';
         elementPin.style.left = effectLevel + '%';
   
-        // changeEffectFilter(effectLevel);
         if (typeof options.callback === 'function') {
           options.callback(effectLevel);
         }

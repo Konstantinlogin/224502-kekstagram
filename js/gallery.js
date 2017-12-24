@@ -1,10 +1,11 @@
 'use strict';
 (function () {
 
+  var DEBOUNCE_INTERVAL = 500;
+
   var galleryPopup = document.querySelector('.gallery-overlay');
   var galleryPopupClose = galleryPopup.querySelector('.gallery-overlay-close');
   var filterSwitcher = document.querySelector('.filters');
-  var debounceInterval = 500;
   var data = [];
 
   var onPictureCloseClick = function (evt) {
@@ -100,7 +101,7 @@
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
     }
-    lastTimeout = window.setTimeout(action, debounceInterval);
+    lastTimeout = window.setTimeout(action, DEBOUNCE_INTERVAL);
   };
 
   var removePictures = function () {

@@ -2,6 +2,10 @@
 
 (function () {
 
+  var URL_POST = 'https://js.dump.academy/kekstagram';
+  var URL_GET = 'https://js.dump.academy/kekstagram/data';
+  var SERVER_TIMEOUT = 10000;
+
   var request = function (url, type, onLoad, onError) {
 
     var statusText = {
@@ -11,7 +15,7 @@
 
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-    xhr.timeout = 10000;
+    xhr.timeout = SERVER_TIMEOUT;
 
     xhr.open(type, url);
 
@@ -33,12 +37,12 @@
   };
 
   window.loadPictures = function (onLoad, onError) {
-    var xhr = request('https://js.dump.academy/kekstagram/data', 'GET', onLoad, onError);
+    var xhr = request(URL_GET, 'GET', onLoad, onError);
     xhr.send();
   };
 
   window.formSumbit = function (data, onLoad, onError) {
-    var xhr = request('https://js.dump.academy/kekstagram', 'POST', onLoad, onError);
+    var xhr = request(URL_POST, 'POST', onLoad, onError);
     xhr.send(data);
   };
 
