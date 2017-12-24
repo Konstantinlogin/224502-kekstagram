@@ -36,14 +36,18 @@
     return xhr;
   };
 
-  window.loadPictures = function (onLoad, onError) {
+  var loadPictures = function (onLoad, onError) {
     var xhr = sendRequest(URL_GET, 'GET', onLoad, onError);
     xhr.send();
   };
 
-  window.formSumbit = function (data, onLoad, onError) {
+  var formSumbit = function (data, onLoad, onError) {
     var xhr = sendRequest(URL_POST, 'POST', onLoad, onError);
     xhr.send(data);
   };
 
+  window.backend = {
+    loadPictures: loadPictures,
+    formSumbit: formSumbit
+  };
 })();

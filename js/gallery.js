@@ -94,7 +94,7 @@
     window.errorDialog(errorMessage);
   };
 
-  window.loadPictures(onLoad, onError);
+  window.backend.loadPictures(onLoad, onError);
 
   var lastTimeout;
   var debounce = function (action) {

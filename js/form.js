@@ -119,7 +119,7 @@
         window.errorDialog(message);
       };
 
-      window.formSumbit(submitData, onLoad, onError);
+      window.backend.formSumbit(submitData, onLoad, onError);
     }
 
   };
