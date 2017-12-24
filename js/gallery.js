@@ -113,13 +113,7 @@
 
   var getPopularPhotos = function (dataPopular) {
     return dataPopular.slice().sort(function (first, second) {
-      if (first.likes < second.likes) {
-        return 1;
-      } else if (first.likes > second.likes) {
-        return -1;
-      } else {
-        return 0;
-      }
+      return second.likes - first.likes;
     });
   };
 

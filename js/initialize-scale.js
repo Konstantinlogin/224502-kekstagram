@@ -16,21 +16,13 @@
     var getValue = function (evt) {
 
       evt.preventDefault();
-
+      
       if (evt.target === incrementElement) {
-        if (size !== max) {
-          size += step;
-        } else {
-          size = max;
-        }
+        size = size !== max ? size += step : max;
       } else if (evt.target === decrementElement) {
-        if (size !== min) {
-          size -= step;
-        } else {
-          size = min;
-        }
+        size = size !== min ? size -= step : min;
       }
-
+      
       if (typeof options.callback === 'function') {
         options.callback(size);
       }
