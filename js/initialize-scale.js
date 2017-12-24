@@ -16,13 +16,11 @@
     var getValue = function (evt) {
 
       evt.preventDefault();
-      
       if (evt.target === incrementElement) {
         size = size !== max ? size += step : max;
       } else if (evt.target === decrementElement) {
         size = size !== min ? size -= step : min;
       }
-      
       if (typeof options.callback === 'function') {
         options.callback(size);
       }

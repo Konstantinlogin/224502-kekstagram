@@ -9,6 +9,7 @@
   var HASHES_MAX_COUNT = 5;
   var HASHES_MAX_LENGTH = 21;
   var HASHES_PATTERN = /^#[a-zа-яё]+$/;
+  var IMAGE_EXTENTIONS = ['jpg', 'png'];
 
   var uploadForm = document.querySelector('#upload-select-image');
 
@@ -54,8 +55,11 @@
     document.removeEventListener('keydown', onUploadOverlayCloseEnter);
   };
 
-  var onUploadInputChange = function () {
-    showUploadForm();
+  var onUploadInputChange = function (evt) {
+    if (validateExtention(IMAGE_EXTENTIONS, elements.uploadInput.value)) {
+      showUploadForm();
+      elements.uploadPicture.src = URL.createObjectURL(evt.target.files[0]);
+    }
   };
 
   var onCommentTextareaFocusOut = function () {
@@ -104,8 +108,8 @@
 
   var onUploadFormSubmit = function (evt) {
     var submitData = new FormData(document.querySelector('.upload-form'));
-    
-    var validateResult =  validateWords(elements.hashTagInput.value, HASHES_MAX_COUNT, HASHES_MAX_LENGTH, HASHES_PATTERN);
+
+    var validateResult = validateWords(elements.hashTagInput.value, HASHES_MAX_COUNT, HASHES_MAX_LENGTH, HASHES_PATTERN);
 
     evt.preventDefault();
     if (elements.hashTagInput.value.length > 0 && !validateResult) {
@@ -193,43 +197,55 @@
   });
 
 
-  var uploadFormEvents = [
-    {
-      element: elements.uploadOverlayClose,
-      action: 'click',
-      eventFunction: onUploadOverlayClose
-    },
-    {
-      element: elements.uploadOverlayClose,
-      action: 'focus',
-      eventFunction: onUploadOverlayCloseFocus
-    },
-    {
-      element: elements.uploadOverlayClose,
-      action: 'blur',
-      eventFunction: onUploadOverlayCloseFocusOut
-    },
-    {
-      element: elements.commentTextarea,
-      action: 'focus',
-      eventFunction: onCommentTextareaFocus
-    },
-    {
-      element: elements.commentTextarea,
-      action: 'blur',
-      eventFunction: onCommentTextareaFocusOut
-    },
-    {
-      element: document,
-      action: 'keydown',
-      eventFunction: onUploadOverlayEscape
-    },
-    {
-      element: uploadForm,
-      action: 'submit',
-      eventFunction: onUploadFormSubmit
+  var uploadFormEvents = [{
+    element: elements.uploadOverlayClose,
+    action: 'click',
+    eventFunction: onUploadOverlayClose
+  },
+  {
+    element: elements.uploadOverlayClose,
+    action: 'focus',
+    eventFunction: onUploadOverlayCloseFocus
+  },
+  {
+    element: elements.uploadOverlayClose,
+    action: 'blur',
+    eventFunction: onUploadOverlayCloseFocusOut
+  },
+  {
+    element: elements.commentTextarea,
+    action: 'focus',
+    eventFunction: onCommentTextareaFocus
+  },
+  {
+    element: elements.commentTextarea,
+    action: 'blur',
+    eventFunction: onCommentTextareaFocusOut
+  },
+  {
+    element: document,
+    action: 'keydown',
+    eventFunction: onUploadOverlayEscape
+  },
+  {
+    element: uploadForm,
+    action: 'submit',
+    eventFunction: onUploadFormSubmit
+  }];
+
+  var validateExtention = function (array, string) {
+    var position = string.lastIndexOf('.') + 1;
+    var extention = string.substring(position, string.length).toLowerCase();
+    var isValid = false;
+
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] === extention) {
+        isValid = true;
+        break;
+      }
     }
-  ];
+    return isValid;
+  };
 
   var showUploadForm = function () {
     elements.uploadOverlay.removeClass('hidden');

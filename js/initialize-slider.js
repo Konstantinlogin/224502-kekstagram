@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    
+
   window.initializeSlider = function (options) {
 
     var maxValue = options.maxValue;
@@ -50,7 +50,7 @@
       };
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
-    }
+    };
 
     elementPin.addEventListener('mousedown', function (evt) {
       moveSlider(evt);
