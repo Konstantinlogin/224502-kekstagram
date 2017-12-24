@@ -162,6 +162,7 @@
     elements.commentTextarea.value = '';
     elements.hashTagInput.value = '';
     elements.uploadInput.value = '';
+    elements.hashTagInput.style.removeProperty('border-color');
   };
 
   var setEffectDefault = function () {
