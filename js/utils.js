@@ -6,15 +6,15 @@
   var ENTER_KEYCODE = 13;
 
   var addMultipleEvents = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].element.addEventListener(array[i].action, array[i].eventFunction);
-    }
+    array.forEach(function (item) {
+      item.element.addEventListener(item.action, item.eventFunction);
+    });
   };
 
   var removeMultipleEvents = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].element.removeEventListener(array[i].action, array[i].eventFunction);
-    }
+    array.forEach(function (item) {
+      item.element.removeEventListener(item.action, item.eventFunction);
+    });
   };
 
   var getTemplateContent = function (template, element) {

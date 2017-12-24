@@ -127,7 +127,6 @@
   var validateWords = function (string, maxWords, maxLength, pattern) {
 
     var isValid = false;
-
     var words = string.toLowerCase().split(' ');
 
     for (var i = 0; i < words.length; i++) {
