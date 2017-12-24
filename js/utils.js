@@ -17,16 +17,10 @@
     }
   };
 
-  var randomizeNumbers = function (min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  };
-
   var getTemplateContent = function (template, element) {
-    var templateContent;
+    var templateContent = document.querySelector(template).querySelector(element);
     if ('content' in document.createElement('template')) {
       templateContent = document.querySelector(template).content.querySelector(element);
-    } else {
-      templateContent = document.querySelector(template).querySelector(element);
     }
     return templateContent;
   };
@@ -64,7 +58,6 @@
     ENTER_KEYCODE: ENTER_KEYCODE,
     addMultipleEvents: addMultipleEvents,
     removeMultipleEvents: removeMultipleEvents,
-    randomizeNumbers: randomizeNumbers,
     getTemplateContent: getTemplateContent,
     errorDialog: errorDialog
   };

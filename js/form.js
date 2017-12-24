@@ -108,7 +108,7 @@
     var validateResult =  validateWords(elements.hashTagInput.value, HASHES_MAX_COUNT, HASHES_MAX_LENGTH, HASHES_PATTERN);
 
     evt.preventDefault();
-    if (elements.hashTagInput.value.length > 0 && validateResult === false) {
+    if (elements.hashTagInput.value.length > 0 && !validateResult) {
       elements.hashTagInput.style.borderColor = 'red';
     } else {
       elements.hashTagInput.style.removeProperty('border-color');
@@ -116,7 +116,7 @@
         hideUploadForm();
       };
       var onError = function (message) {
-        window.errorDialog(message);
+        window.utils.errorDialog(message);
       };
 
       window.backend.formSumbit(submitData, onLoad, onError);
@@ -131,7 +131,7 @@
     var words = string.toLowerCase().split(' ');
 
     for (var i = 0; i < words.length; i++) {
-      if (pattern.test(words[i]) === false) {
+      if (!pattern.test(words[i])) {
         isValid = false;
         break;
       } else if (words.length > maxWords) {

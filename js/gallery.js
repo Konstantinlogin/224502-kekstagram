@@ -91,7 +91,7 @@
   };
 
   var onError = function (errorMessage) {
-    window.errorDialog(errorMessage);
+    window.utils.errorDialog(errorMessage);
   };
 
   window.backend.loadPictures(onLoad, onError);
