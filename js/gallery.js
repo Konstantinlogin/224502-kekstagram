@@ -14,13 +14,13 @@
   };
 
   var onPictureCloseEscape = function (evt) {
-    if (evt.keyCode === window.KEYCODES.escape) {
+    if (evt.keyCode === window.utils.ESC_KEYCODE) {
       hidePopup();
     }
   };
 
   var onPictureCloseEnter = function (evt) {
-    if (evt.keyCode === window.KEYCODES.enter) {
+    if (evt.keyCode === window.utils.ENTER_KEYCODE) {
       hidePopup();
     }
   };
@@ -58,12 +58,12 @@
 
   var showPopup = function () {
     galleryPopup.removeClass('hidden');
-    window.addMultipleEvents(uploadedPicturesEvents);
+    window.utils.addMultipleEvents(uploadedPicturesEvents);
   };
 
   var hidePopup = function () {
     galleryPopup.addClass('hidden');
-    window.removeMultipleEvents(uploadedPicturesEvents);
+    window.utils.removeMultipleEvents(uploadedPicturesEvents);
   };
 
   var selectedImage;

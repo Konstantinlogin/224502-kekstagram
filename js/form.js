@@ -35,13 +35,13 @@
   };
 
   var onUploadOverlayEscape = function (evt) {
-    if (evt.keyCode === window.KEYCODES.escape) {
+    if (evt.keyCode === window.utils.ESC_KEYCODE) {
       hideUploadForm();
     }
   };
 
   var onUploadOverlayCloseEnter = function (evt) {
-    if (evt.keyCode === window.KEYCODES.enter) {
+    if (evt.keyCode === window.utils.ENTER_KEYCODE) {
       hideUploadForm();
     }
   };
@@ -234,13 +234,13 @@
 
   var showUploadForm = function () {
     elements.uploadOverlay.removeClass('hidden');
-    window.addMultipleEvents(uploadFormEvents);
+    window.utils.addMultipleEvents(uploadFormEvents);
   };
   var hideUploadForm = function () {
     elements.uploadOverlay.addClass('hidden');
     resetUploadForm();
     setEffectDefault();
-    window.removeMultipleEvents(uploadFormEvents);
+    window.utils.removeMultipleEvents(uploadFormEvents);
   };
 
 })();

@@ -2,28 +2,26 @@
 
 (function () {
 
-  window.KEYCODES = {
-    escape: 27,
-    enter: 13
-  };
+  var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
 
-  window.addMultipleEvents = function (array) {
+  var addMultipleEvents = function (array) {
     for (var i = 0; i < array.length; i++) {
       array[i].element.addEventListener(array[i].action, array[i].eventFunction);
     }
   };
 
-  window.removeMultipleEvents = function (array) {
+  var removeMultipleEvents = function (array) {
     for (var i = 0; i < array.length; i++) {
       array[i].element.removeEventListener(array[i].action, array[i].eventFunction);
     }
   };
 
-  window.randomizeNumbers = function (min, max) {
+  var randomizeNumbers = function (min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   };
 
-  window.getTemplateContent = function (template, element) {
+  var getTemplateContent = function (template, element) {
     var templateContent;
     if ('content' in document.createElement('template')) {
       templateContent = document.querySelector(template).content.querySelector(element);
@@ -33,7 +31,7 @@
     return templateContent;
   };
 
-  window.errorDialog = function (message) {
+  var errorDialog = function (message) {
     var template = document.createElement('div');
     template.textContent = message;
     var styles = [
@@ -60,4 +58,15 @@
   Element.prototype.addClass = function (classname) {
     this.classList.add(classname);
   };
+
+  window.utils = {
+    ESC_KEYCODE: ESC_KEYCODE,
+    ENTER_KEYCODE: ENTER_KEYCODE,
+    addMultipleEvents: addMultipleEvents,
+    removeMultipleEvents: removeMultipleEvents,
+    randomizeNumbers: randomizeNumbers,
+    getTemplateContent: getTemplateContent,
+    errorDialog: errorDialog
+  };
+
 })();

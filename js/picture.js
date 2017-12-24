@@ -2,7 +2,7 @@
 
 (function () {
 
-  var pictureTemplate = window.getTemplateContent('#picture-template', '.picture');
+  var pictureTemplate = window.utils.getTemplateContent('#picture-template', '.picture');
   var picturesContainer = document.querySelector('.pictures');
 
   var createPictureNode = function (picture) {
