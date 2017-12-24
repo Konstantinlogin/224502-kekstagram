@@ -6,6 +6,9 @@
   var SCALE_STEP = 25;
   var SCALE_MIN = 25;
   var SCALE_MAX = 100;
+  var HASHES_MAX_COUNT = 5;
+  var HASHES_MAX_LENGTH = 21;
+  var HASHES_PATTERN = /^#[a-zа-яё]+$/;
 
   var uploadForm = document.querySelector('#upload-select-image');
 
@@ -70,9 +73,9 @@
 
   window.initializeScale({
     callback: resizePicture,
-    target: '.upload-resize-controls',
-    increment: '.upload-resize-controls-button-inc',
-    decrement: '.upload-resize-controls-button-dec',
+    target: elements.resizeControls,
+    increment: elements.resizeControls.querySelector('.upload-resize-controls-button-inc'),
+    decrement: elements.resizeControls.querySelector('.upload-resize-controls-button-dec'),
     step: SCALE_STEP,
     max: SCALE_MAX,
     min: SCALE_MIN
@@ -93,7 +96,7 @@
   };
   window.initializeFilters({
     callback: changeEffect,
-    element: '.upload-effect-controls',
+    element: elements.effectControls,
     classPrefix: 'effect'
   });
 
@@ -101,8 +104,11 @@
 
   var onUploadFormSubmit = function (evt) {
     var submitData = new FormData(document.querySelector('.upload-form'));
+    
+    var validateResult =  validateWords(elements.hashTagInput.value, HASHES_MAX_COUNT, HASHES_MAX_LENGTH, HASHES_PATTERN);
+
     evt.preventDefault();
-    if (elements.hashTagInput.value.length > 0 && validateWords(elements.hashTagInput.value) === false) {
+    if (elements.hashTagInput.value.length > 0 && validateResult === false) {
       elements.hashTagInput.style.borderColor = 'red';
     } else {
       elements.hashTagInput.style.removeProperty('border-color');
@@ -118,29 +124,23 @@
 
   };
 
-  var validateWords = function (string) {
-
-    var validate = {
-      tags: 5,
-      pattern: /^#[a-zа-яё]+$/,
-      maxLength: 21
-    };
+  var validateWords = function (string, maxWords, maxLength, pattern) {
 
     var isValid = false;
 
-    var hashes = string.toLowerCase().split(' ');
+    var words = string.toLowerCase().split(' ');
 
-    for (var i = 0; i < hashes.length; i++) {
-      if (validate.pattern.test(hashes[i]) === false) {
+    for (var i = 0; i < words.length; i++) {
+      if (pattern.test(words[i]) === false) {
         isValid = false;
         break;
-      } else if (hashes.length > validate.tags) {
+      } else if (words.length > maxWords) {
         isValid = false;
         break;
-      } else if (hashes.indexOf(hashes[i], i + 1) >= 0) {
+      } else if (words.indexOf(words[i], i + 1) >= 0) {
         isValid = false;
         break;
-      } else if (hashes[i].length > validate.maxLength) {
+      } else if (words[i].length > maxLength) {
         isValid = false;
         break;
       } else {
@@ -162,8 +162,8 @@
   };
 
   var setEffectDefault = function () {
-    elements.effectLevelPin.style.left = elements.effectLevelValue.value + '%';
-    elements.effectLevelVal.style.width = elements.effectLevelPin.style.left;
+    elements.effectLevelPin.style.left = EFFECT_MAX_VALUE + '%';
+    elements.effectLevelVal.style.width = EFFECT_MAX_VALUE + '%';
     elements.effectLevelValue.value = EFFECT_MAX_VALUE;
     elements.uploadPicture.style.removeProperty('filter');
   };
@@ -235,7 +235,6 @@
   var showUploadForm = function () {
     elements.uploadOverlay.removeClass('hidden');
     window.addMultipleEvents(uploadFormEvents);
-    setEffectDefault();
   };
   var hideUploadForm = function () {
     elements.uploadOverlay.addClass('hidden');

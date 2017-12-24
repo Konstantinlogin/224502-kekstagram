@@ -6,7 +6,7 @@
   var URL_GET = 'https://js.dump.academy/kekstagram/data';
   var SERVER_TIMEOUT = 10000;
 
-  var request = function (url, type, onLoad, onError) {
+  var sendRequest = function (url, type, onLoad, onError) {
 
     var statusText = {
       error: 'Ошибка сервера',
@@ -37,12 +37,12 @@
   };
 
   window.loadPictures = function (onLoad, onError) {
-    var xhr = request(URL_GET, 'GET', onLoad, onError);
+    var xhr = sendRequest(URL_GET, 'GET', onLoad, onError);
     xhr.send();
   };
 
   window.formSumbit = function (data, onLoad, onError) {
-    var xhr = request(URL_POST, 'POST', onLoad, onError);
+    var xhr = sendRequest(URL_POST, 'POST', onLoad, onError);
     xhr.send(data);
   };
 

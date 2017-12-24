@@ -23,7 +23,6 @@
     return Math.floor(Math.random() * (max - min)) + min;
   };
 
-
   window.getTemplateContent = function (template, element) {
     var templateContent;
     if ('content' in document.createElement('template')) {

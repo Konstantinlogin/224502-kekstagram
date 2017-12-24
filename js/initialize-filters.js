@@ -4,7 +4,7 @@
 
   window.initializeFilters = function (options) {
 
-    var element = document.querySelector(options.element);
+    var element = options.element;
 
     var getClass = function (evt) {
 
@@ -16,6 +16,7 @@
         options.callback(className);
       }
       return className;
+
     };
 
     element.addEventListener('change', function (evt) {

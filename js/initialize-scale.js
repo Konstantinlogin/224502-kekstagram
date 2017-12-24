@@ -5,9 +5,9 @@
 
   window.initializeScale = function (options) {
 
-    var targetElement = document.querySelector(options.target);
-    var incrementElement = targetElement.querySelector(options.increment);
-    var decrementElement = targetElement.querySelector(options.decrement);
+    var targetElement = options.target;
+    var incrementElement = options.increment;
+    var decrementElement = options.decrement;
     var step = options.step;
     var max = options.max;
     var min = options.min;
